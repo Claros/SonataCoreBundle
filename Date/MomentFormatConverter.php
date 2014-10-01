@@ -32,12 +32,13 @@ class MomentFormatConverter
      */
     private $phpMomentMapping = array(
         "yyyy-MM-dd'T'HH:mm:ssZZZZZ" => 'YYYY-MM-DDTHH:mm:ssZZ', // 2014-05-14T13:55:01+02:00
+        "Y-m-d\TH:i:sO"              => 'YYYY-MM-DDTHH:mm:ssZZ', // 2014-05-14T13:55:01+0200
+        "dd.MM.yyyy, HH:mm"          => 'DD.MM.YYYY, HH:mm',     // german format without seconds: 14.05.2014, 13:55
+        "d.m.Y, H:i"                 => 'DD.MM.YYYY, HH:mm',     // german format without seconds: 14.05.2014, 13:55
+        "dd.MM.yyyy, HH:mm:ss"       => 'DD.MM.YYYY, HH:mm:ss',  // german format: 14.05.2014, 13:55:01
+        "d.m.Y, H:i:s"               => 'DD.MM.YYYY, HH:mm:ss',  // german format: 14.05.2014, 13:55:01
         "yyyy-MM-dd"                 => 'YYYY-MM-DD',            // 2014-05-14
-        "dd.MM.yyyy, HH:mm"          => 'DD.MM.YYYY, HH:mm',     // 14.05.2014, 13:55, German format without seconds
-        "dd.MM.yyyy, HH:mm:ss"       => 'DD.MM.YYYY, HH:mm:ss',  // 14.05.2014, 13:55:01, German format with seconds
-        "dd/MM/yyyy"                 => 'DD/MM/YYYY',            // 14/05/2014, British ascending format
-        "dd/MM/yyyy HH:mm"           => 'DD/MM/YYYY HH:mm',      // 14/05/2014 13:55, British ascending format with time
-        "EE, dd/MM/yyyy HH:mm"       => 'ddd, DD/MM/YYYY HH:mm', // Wed, 14/05/2014 13:55, includes day of week in British format
+        "Y-m-d"                      => 'YYYY-MM-DD',            // 2014-05-14
     );
 
     /**

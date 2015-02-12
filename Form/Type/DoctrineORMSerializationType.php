@@ -13,6 +13,7 @@
 namespace Sonata\CoreBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Sonata\CoreBundle\Form\EventListener\FixCheckboxDataListener;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 use Symfony\Component\Form\AbstractType;
@@ -52,6 +53,11 @@ class DoctrineORMSerializationType extends AbstractType
     protected $group;
 
     /**
+     * @var boolean
+     */
+    protected $identifierOverwrite;
+
+    /**
      * Constructor
      *
      * @param MetadataFactoryInterface $metadataFactory Serializer metadata factory
@@ -60,13 +66,14 @@ class DoctrineORMSerializationType extends AbstractType
      * @param string                   $class           Data class name
      * @param string                   $group           Serialization group name
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, ManagerRegistry $registry, $name, $class, $group)
+    public function __construct(MetadataFactoryInterface $metadataFactory, ManagerRegistry $registry, $name, $class, $group, $identifierOverwrite = false)
     {
         $this->metadataFactory = $metadataFactory;
         $this->registry = $registry;
         $this->name  = $name;
         $this->class = $class;
         $this->group = $group;
+        $this->identifierOverwrite = $identifierOverwrite;
     }
 
     /**
@@ -82,7 +89,7 @@ class DoctrineORMSerializationType extends AbstractType
         foreach ($serializerMetadata->propertyMetadata as $propertyMetadata) {
             $name = $propertyMetadata->name;
 
-            if (in_array($name, $doctrineMetadata->getIdentifierFieldNames())) {
+            if (in_array($name, $doctrineMetadata->getIdentifierFieldNames()) && !$this->identifierOverwrite) {
                 continue;
             }
 
@@ -110,6 +117,12 @@ class DoctrineORMSerializationType extends AbstractType
             switch ($type) {
                 case 'datetime':
                     $builder->add($name, $type, array('required' => !$nullable, 'widget' => 'single_text'));
+                    break;
+
+                case 'boolean':
+                    $childBuilder = $builder->create($name, null, array('required' => !$nullable));
+                    $childBuilder->addEventSubscriber(new FixCheckboxDataListener());
+                    $builder->add($childBuilder);
                     break;
 
                 default:
